@@ -299,6 +299,9 @@ private fun CarSettings(d: Dependencies) {
     SettingsCard(stringResource(R.string.info_title), stringResource(R.string.info_title_help)) {
         CarInfoSettings(d.info, d.weather, d.trip)
     }
+    SettingsCard(stringResource(R.string.obd_title), stringResource(R.string.obd_help)) {
+        ObdSettings(d.obd)
+    }
     SettingsCard(stringResource(R.string.fuel_title), stringResource(R.string.fuel_help)) {
         FuelSettings(d.fuel, d.oil)
     }

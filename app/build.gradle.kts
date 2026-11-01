@@ -139,4 +139,5 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.profileinstaller)
     debugImplementation(libs.compose.ui.tooling)
+    testImplementation(libs.junit)
 }

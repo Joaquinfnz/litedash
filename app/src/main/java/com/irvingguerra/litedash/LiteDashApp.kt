@@ -51,6 +51,7 @@ class LiteDashApp : Application() {
             oil = oil,
             fuel = FuelRepository(this, oil),
             info = CarInfoPrefs(this),
+            obd = ObdRepository(this),
             wheel = WheelKeys(this, prefs),
         )
     }

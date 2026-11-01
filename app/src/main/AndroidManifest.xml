@@ -19,6 +19,11 @@
 
     <!-- Solo para bajar el catálogo de autos (imágenes) cuando el usuario lo abre. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- OBD-II (ELM327 por Bluetooth): solo si el usuario enciende el módulo. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <!-- Ícono de Wi-Fi o datos en la barra (permiso normal, sin pregunta). -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Clima y tema por el sol: solo la ubicación aproximada, y solo si lo activas. -->

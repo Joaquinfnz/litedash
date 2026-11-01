@@ -113,6 +113,7 @@ class Dependencies(
     val oil: OilRepository,
     val fuel: FuelRepository,
     val info: CarInfoPrefs,
+    val obd: ObdRepository,
     val wheel: WheelKeys,
 )
 
@@ -304,7 +305,7 @@ fun Home(d: Dependencies, revision: Int, homePressed: Int) {
                 driverName = d.prefs.driverName,
                 weather = d.weather,
                 oil = d.oil,
-                info = { CarInfoBar(d.info, d.fuel, d.oil, d.weather, d.trip) },
+                info = { CarInfoBar(d.info, d.fuel, d.oil, d.weather, d.trip, d.obd) },
                 onAdd = { panel = Panel.AddTile },
                 onTemplates = { panel = Panel.Templates },
                 onFinish = { editing = false },

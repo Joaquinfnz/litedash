@@ -135,7 +135,7 @@ private fun Datum(value: String, unit: String) {
  * cada uno solo si está encendido y tiene algo que decir.
  */
 @Composable
-fun CarInfoBar(info: CarInfoPrefs, fuel: FuelRepository, oil: OilRepository, weather: WeatherRepository, trip: TripRepository) {
+fun CarInfoBar(info: CarInfoPrefs, fuel: FuelRepository, oil: OilRepository, weather: WeatherRepository, trip: TripRepository, obd: ObdRepository) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(22.dp)) {
         if (info.trip && trip.hasPermission()) {
             KeepTripRunning(trip)
@@ -149,6 +149,7 @@ fun CarInfoBar(info: CarInfoPrefs, fuel: FuelRepository, oil: OilRepository, wea
                 Datum(decimal((trip.meters / 1000.0).toFloat()), stringResource(R.string.info_trip_unit, minutes / 60, minutes % 60))
             }
         }
+        ObdBarData(obd) { v, u -> Datum(v, u) }
         if (info.economy) fuel.average?.let { Datum(decimal(it), "km/L") }
         if (info.oil) OilChip(oil)
         if (info.weather && weather.active) weather.weather?.let { Datum("${it.temperature}°", "") }

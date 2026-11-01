@@ -301,6 +301,7 @@ fun Home(d: Dependencies, revision: Int, homePressed: Int) {
                 showTime = showTime,
                 driverName = d.prefs.driverName,
                 weather = d.weather,
+                oil = d.oil,
                 onAdd = { panel = Panel.AddTile },
                 onTemplates = { panel = Panel.Templates },
                 onFinish = { editing = false },
@@ -391,7 +392,7 @@ fun Home(d: Dependencies, revision: Int, homePressed: Int) {
         if (parked) Parked(d, onWake = { parked = false; touched++ })
 
         if (!d.prefs.welcomeSeen) {
-            Welcome(d.prefs, d.dashboard, revision, onFinish = { d.prefs.welcomeSeen = true })
+            Welcome(d.prefs, d.dashboard, revision, d.cars, onFinish = { d.prefs.welcomeSeen = true })
         }
     }
 }
@@ -445,7 +446,7 @@ private fun topBarHeight() = if (isShortScreen()) 44.dp else 64.dp
 private val TOP_BAR_HIDDEN = 12.dp
 
 @Composable
-private fun TopBar(editing: Boolean, showTime: Boolean, driverName: String?, weather: WeatherRepository, onAdd: () -> Unit, onTemplates: () -> Unit, onFinish: () -> Unit) {
+private fun TopBar(editing: Boolean, showTime: Boolean, driverName: String?, weather: WeatherRepository, oil: OilRepository, onAdd: () -> Unit, onTemplates: () -> Unit, onFinish: () -> Unit) {
     val c = LocalColors.current
     // Sin nada que mostrar (la hora ya está en una pieza), la barra no aparta espacio: el tablero sube.
     if (!editing && !showTime) return Spacer(Modifier.height(TOP_BAR_HIDDEN))
@@ -467,6 +468,7 @@ private fun TopBar(editing: Boolean, showTime: Boolean, driverName: String?, wea
                 if (hello != null) Label(hello, Typography.subtitle, maxLines = 1)
                 Label(date, Typography.body, c.textMuted, maxLines = 1)
             }
+            OilChip(oil)
             WeatherChip(weather)
             StatusIcons()
             Label(time, Typography.subtitle, maxLines = 1)

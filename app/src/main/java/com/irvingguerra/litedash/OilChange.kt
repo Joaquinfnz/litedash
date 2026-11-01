@@ -132,3 +132,25 @@ private fun KmField(title: String, value: Int, onChange: (Int) -> Unit) {
         )
     }
 }
+
+/**
+ * Los km que faltan para el aceite, siempre a la vista en la barra superior
+ * (si ya se configuró). Cerca o atrasado, en color de acento o de alerta.
+ */
+@Composable
+fun OilChip(repo: OilRepository) {
+    if (!repo.configured) return
+    val c = LocalColors.current
+    val r = repo.remaining
+    val color = when {
+        r < 0 -> c.accent
+        r <= OilRepository.WARN_KM -> c.danger
+        else -> c.textMuted
+    }
+    Label(
+        if (r >= 0) stringResource(R.string.oil_chip, km(r)) else stringResource(R.string.oil_overdue, km(-r)),
+        Typography.body,
+        color,
+        maxLines = 1,
+    )
+}

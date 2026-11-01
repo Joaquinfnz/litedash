@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
@@ -46,32 +48,41 @@ data class Colors(
     val text: Color,
     val textMuted: Color,
     val accent: Color,
+    /** Fondo lleno de acento (CarPlay): más oscuro que [accent] para que el texto blanco se lea. */
+    val accentFill: Color,
+    /** Texto sobre [accentFill]. */
+    val onAccent: Color,
     val danger: Color,
 )
 
-// Tema rally (versión de Joaquín): azul profundo con acentos dorados.
+// Tema de Joaquín: negro con el rojo de la iluminación de la cabina del XV.
+// Contraste: texto 16:1, apagado 7.5:1, rojo de texto 4.9:1, blanco sobre rojo de fondo 5.8:1.
 val DarkColors = Colors(
     dark = true,
-    background = Color(0xFF071330),
-    surface = Color(0xFF0D1F4A),
-    surfaceHigh = Color(0xFF15306B),
-    line = Color(0xFF234184),
-    text = Brand.LightWhite,
-    textMuted = Color(0xFFA7B6D6),
-    accent = Color(0xFFF2C230),
-    danger = Color(0xFFFF6B5E),
+    background = Color(0xFF0B0B0C),
+    surface = Color(0xFF151517),
+    surfaceHigh = Color(0xFF202024),
+    line = Color(0xFF2B2B30),
+    text = Color(0xFFF3F3F4),
+    textMuted = Color(0xFFA6A6AD),
+    accent = Color(0xFFF2453A),
+    accentFill = Color(0xFFC2261F),
+    onAccent = Color.White,
+    danger = Color(0xFFFFB020),
 )
 
 val LightColors = Colors(
     dark = false,
-    background = Color(0xFFEEF2FA),
+    background = Color(0xFFF3F3F4),
     surface = Color.White,
-    surfaceHigh = Color(0xFFDDE5F5),
-    line = Color(0xFFC9D4EA),
-    text = Color(0xFF0A1A3F),
-    textMuted = Color(0xFF4F5F80),
-    accent = Color(0xFF1F4FBF),
-    danger = Color(0xFFD93A2B),
+    surfaceHigh = Color(0xFFE6E6E9),
+    line = Color(0xFFD5D5DA),
+    text = Color(0xFF111113),
+    textMuted = Color(0xFF55555C),
+    accent = Color(0xFFC2261F),
+    accentFill = Color(0xFFC2261F),
+    onAccent = Color.White,
+    danger = Color(0xFFB36B00),
 )
 
 val LocalColors = staticCompositionLocalOf { DarkColors }
@@ -90,13 +101,22 @@ fun LiteDashTheme(dark: Boolean = true, scale: Float = 1f, content: @Composable 
     )
 }
 
+/** Nunito (OFL, solo latín): redondeada y cálida, de números claros a un brazo de distancia. */
+val Rounded = FontFamily(
+    Font(R.font.nunito_medium, FontWeight.Normal),
+    Font(R.font.nunito_medium, FontWeight.Medium),
+    Font(R.font.nunito_bold, FontWeight.SemiBold),
+    Font(R.font.nunito_bold, FontWeight.Bold),
+    Font(R.font.nunito_extrabold, FontWeight.ExtraBold),
+)
+
 object Typography {
-    val clock = TextStyle(fontSize = 56.sp, fontWeight = FontWeight.Medium, letterSpacing = (-1).sp)
-    val title = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
-    val subtitle = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)
-    val body = TextStyle(fontSize = 16.sp)
-    val small = TextStyle(fontSize = 13.sp)
-    val label = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.sp)
+    val clock = TextStyle(fontFamily = Rounded, fontSize = 60.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp)
+    val title = TextStyle(fontFamily = Rounded, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+    val subtitle = TextStyle(fontFamily = Rounded, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+    val body = TextStyle(fontFamily = Rounded, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+    val small = TextStyle(fontFamily = Rounded, fontSize = 14.sp)
+    val label = TextStyle(fontFamily = Rounded, fontSize = 14.sp, fontWeight = FontWeight.Bold)
 }
 
 @Composable
@@ -115,11 +135,13 @@ fun Label(
 fun Card(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    accent: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val c = LocalColors.current
     val shape = RoundedCornerShape(20.dp)
-    var m = modifier.clip(shape).background(c.surface).border(1.dp, c.line, shape)
+    // La pieza de acento (CarPlay) es la única de color lleno: sin borde, se lee primero.
+    var m = if (accent) modifier.clip(shape).background(c.accentFill) else modifier.clip(shape).background(c.surface).border(1.dp, c.line, shape)
     if (onClick != null) m = m.clickable(onClick = onClick)
     Box(m, content = content)
 }
@@ -152,5 +174,5 @@ fun Button(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, pri
             .clickable(onClick = onClick)
             .padding(horizontal = 22.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center,
-    ) { Label(text, Typography.body.copy(fontWeight = FontWeight.SemiBold), if (primary) c.background else c.text, 1) }
+    ) { Label(text, Typography.body.copy(fontWeight = FontWeight.Bold), if (primary) c.background else c.text, 1) }
 }

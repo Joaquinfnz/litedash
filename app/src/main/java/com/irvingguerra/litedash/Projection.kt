@@ -1,5 +1,23 @@
 package com.irvingguerra.litedash
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import com.irvingguerra.litedash.core.ui.Card
+import com.irvingguerra.litedash.core.ui.Icon
+import com.irvingguerra.litedash.core.ui.Label
+import com.irvingguerra.litedash.core.ui.LocalColors
+import com.irvingguerra.litedash.core.ui.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,7 +47,17 @@ fun projectionApp(apps: List<App>): App? =
 fun ProjectionTile(d: Dependencies, apps: List<App>, onMissing: () -> Unit) {
     val context = LocalContext.current
     val app = projectionApp(apps)
-    ShortcutTile(Icons.phoneCar, stringResource(R.string.tile_projection), app?.name ?: stringResource(R.string.projection_missing)) {
-        if (app != null) d.apps.open(context, app) else onMissing()
+    val c = LocalColors.current
+    // CarPlay es lo primero que se busca al subir al auto: la única pieza en color de rally.
+    Card(Modifier.fillMaxSize(), onClick = { if (app != null) d.apps.open(context, app) else onMissing() }, accent = true) {
+        Row(Modifier.fillMaxSize().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Box(Modifier.size(52.dp).clip(CircleShape).background(c.onAccent.copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                Icon(Icons.phoneCar, c.onAccent, 28.dp)
+            }
+            Column(Modifier.weight(1f)) {
+                Label(stringResource(R.string.carplay_open), Typography.title, c.onAccent, maxLines = 1)
+                Label(app?.name ?: stringResource(R.string.projection_missing), Typography.small, c.onAccent.copy(alpha = 0.75f), maxLines = 1)
+            }
+        }
     }
 }

@@ -141,14 +141,14 @@ fun Template.tiles(c: Grid): List<Tile> {
     when (this) {
         Template.CENTER -> {
             val bottom = if (rows >= 6) 2 else 1
-            val carWidth = (cols * 0.6).toInt().coerceAtLeast(3)
+            val carWidth = (cols * 0.8).toInt().coerceAtLeast(3)
             place(TileTypes.CAR, (cols - carWidth) / 2, 0, carWidth, rows - bottom)
             // Las tarjetas de abajo miden lo mismo que el auto, alineadas con él.
             val start = (cols - carWidth) / 2
-            val musicWidth = (carWidth * 0.6).toInt().coerceAtLeast(3)
-            val navWidth = carWidth - musicWidth
-            place(TileTypes.MUSIC, start, rows - bottom, musicWidth, bottom)
-            place(TileTypes.NAVIGATE, start + musicWidth, rows - bottom, navWidth, bottom)
+            // CarPlay a la izquierda (el toque más frecuente) y la música al lado.
+            val carplayWidth = (carWidth / 2).coerceAtLeast(2)
+            place(TileTypes.PROJECTION, start, rows - bottom, carplayWidth, bottom)
+            place(TileTypes.MUSIC, start + carplayWidth, rows - bottom, carWidth - carplayWidth, bottom)
         }
         Template.CARDS -> {
             val bottom = if (rows >= 6) 2 else 1

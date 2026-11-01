@@ -159,6 +159,8 @@
     <string name="android_about">About device</string>
     <string name="android_developer">Developer options</string>
     <string name="android_settings_missing">This screen doesn\'t have that setting</string>
+    <string name="carplay_open">CarPlay</string>
+    <string name="oil_chip">Oil %1$s km</string>
     <string name="oil_change">Oil change</string>
     <string name="oil_help">Enter the car\'s mileage now and then (for example, when refueling). You get a heads-up on home 1,000 km before.</string>
     <string name="oil_odometer">Current mileage</string>

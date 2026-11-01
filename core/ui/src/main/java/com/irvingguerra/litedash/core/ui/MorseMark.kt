@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
  * Mismas proporciones que el SVG: lienzo de 184 × 48 unidades.
  */
 @Composable
-fun MorseMark(modifier: Modifier = Modifier, color: Color = LocalColors.current.text, light: Color = Brand.Amber) {
+fun MorseMark(modifier: Modifier = Modifier, color: Color = LocalColors.current.text, light: Color = LocalColors.current.accent) {
     Canvas(modifier) {
         val u = size.width / 184f
         val height = 36f * u

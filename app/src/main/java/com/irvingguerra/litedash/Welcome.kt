@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ import com.irvingguerra.litedash.core.ui.LocalColors
 import com.irvingguerra.litedash.core.ui.MorseMark
 import com.irvingguerra.litedash.core.ui.Typography
 import com.irvingguerra.litedash.feature.car.CarDrawing
+import com.irvingguerra.litedash.feature.car.CarRepository
+import com.irvingguerra.litedash.feature.car.CarStill
 import com.irvingguerra.litedash.feature.dashboard.DashboardState
 import com.irvingguerra.litedash.feature.dashboard.Template
 import com.irvingguerra.litedash.feature.dashboard.size
@@ -73,7 +76,7 @@ fun isHomeApp(context: Context): Boolean {
  * tema), 3) hacerlo tu pantalla de inicio. Todo se puede cambiar después.
  */
 @Composable
-fun Welcome(prefs: Preferences, dashboard: DashboardState, revision: Int, onFinish: () -> Unit) {
+fun Welcome(prefs: Preferences, dashboard: DashboardState, revision: Int, cars: CarRepository, onFinish: () -> Unit) {
     val c = LocalColors.current
     var step by remember { mutableIntStateOf(prefs.welcomeStep.coerceIn(0, 2)) }
     fun goTo(n: Int) {
@@ -104,7 +107,7 @@ fun Welcome(prefs: Preferences, dashboard: DashboardState, revision: Int, onFini
         }
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(vertical = 24.dp)) {
             when (step) {
-                0 -> CarStep(prefs)
+                0 -> CarStep(prefs, cars)
                 1 -> StyleStep(prefs, dashboard)
                 else -> HomeStep(revision)
             }
@@ -131,13 +134,15 @@ private fun Titles(title: String, text: String) {
 }
 
 @Composable
-private fun ColumnScope.CarStep(prefs: Preferences) {
+private fun ColumnScope.CarStep(prefs: Preferences, cars: CarRepository) {
     val c = LocalColors.current
     Titles(stringResource(R.string.welcome_title), stringResource(R.string.welcome_car))
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val horizontal = maxWidth > 700.dp
         val drawing = @Composable { m: Modifier ->
-            CarDrawing(prefs.carColor, m)
+            // Con un auto ya instalado (el XV viene en el APK) se muestra ese, no el dibujo genérico.
+            val pkg = cars.pkg(prefs.carModel)
+            if (pkg != null) CarStill(cars, pkg, prefs.carColor, m.aspectRatio(2.3f)) else CarDrawing(prefs.carColor, m)
         }
         val options = @Composable { m: Modifier ->
             Column(m, verticalArrangement = Arrangement.spacedBy(16.dp)) {

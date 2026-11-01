@@ -37,6 +37,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -121,7 +122,7 @@ internal fun PanelScaffold(
 }
 
 @Composable
-fun TextInput(value: String, onChange: (String) -> Unit, hint: String, modifier: Modifier = Modifier, icon: Boolean = false) {
+fun TextInput(value: String, onChange: (String) -> Unit, hint: String, modifier: Modifier = Modifier, icon: Boolean = false, keyboardType: KeyboardType = KeyboardType.Text) {
     val c = LocalColors.current
     Row(
         modifier.height(56.dp).clip(RoundedCornerShape(28.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(28.dp)).padding(horizontal = 20.dp),
@@ -140,7 +141,7 @@ fun TextInput(value: String, onChange: (String) -> Unit, hint: String, modifier:
                 textStyle = Typography.body.copy(color = c.text),
                 singleLine = true,
                 cursorBrush = SolidColor(c.accent),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
             )
         }
     }
@@ -294,6 +295,9 @@ private fun CarSettings(d: Dependencies) {
         }
     } else if (installed.isEmpty()) {
         SettingsCard { Label(stringResource(R.string.car_coming_soon), Typography.small, c.textMuted) }
+    }
+    SettingsCard(stringResource(R.string.oil_change), stringResource(R.string.oil_help)) {
+        OilSettings(d.oil)
     }
     SettingsCard(stringResource(R.string.reminders), stringResource(R.string.reminders_help)) {
         ReminderSettings(d.reminders)
@@ -699,6 +703,9 @@ private fun About(d: Dependencies) {
     SettingsCard("LiteDash ${BuildConfig.VERSION_NAME}") {
         Label(BuildConfig.CHANNEL, Typography.small, c.textMuted)
         if (d.updater.available) Updates(d.updater)
+    }
+    SettingsCard(stringResource(R.string.android_settings), stringResource(R.string.android_settings_help)) {
+        AndroidSettingsButtons()
     }
     SettingsCard(stringResource(R.string.copy_info), stringResource(R.string.copy_info_help)) {
         var copied by remember { mutableStateOf(false) }

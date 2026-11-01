@@ -110,6 +110,7 @@ class Dependencies(
     val weather: WeatherRepository,
     val trip: TripRepository,
     val reminders: ReminderRepository,
+    val oil: OilRepository,
     val wheel: WheelKeys,
 )
 
@@ -310,6 +311,8 @@ fun Home(d: Dependencies, revision: Int, homePressed: Int) {
                 if (d.prefs.welcomeSeen && !editing) {
                     if (!d.prefs.dontAskHome && !isShortScreen()) HomePrompt(d.prefs, revision)
                     if (!isShortScreen()) ReminderBanner(d.reminders)
+                    // El aceite se ve siempre: en 1024×600 con densidad alta la pantalla cuenta como baja.
+                    OilBanner(d.oil)
                     UpdateBanner(d.updater, onOpen = { panel = Panel.About })
                     if (car != null) CarUpdateBanner(d.cars, car)
                 }

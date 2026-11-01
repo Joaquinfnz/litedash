@@ -21,6 +21,14 @@ class LiteDashApp : Application() {
         val mapPackages = NAVIGATION_PACKAGES.toSet() +
             if (BuildConfig.DEBUG) setOf(NavigationRepository.TEST_PACKAGE) else emptySet()
         val prefs = Preferences(this)
+        BundledCar.install(this)
+        // Tu XV queda elegido la primera vez; se puede cambiar en Ajustes → Tu auto.
+        getSharedPreferences("joaquin", MODE_PRIVATE).let { j ->
+            if (!j.getBoolean("xv_elegido", false)) {
+                if (prefs.carModel == null) prefs.carModel = BundledCar.XV_ID
+                j.edit().putBoolean("xv_elegido", true).apply()
+            }
+        }
         Dependencies(
             apps = AppRepository(this),
             music = MusicRepository(this).apply { preferred = prefs.musicApp },
@@ -32,6 +40,7 @@ class LiteDashApp : Application() {
             weather = WeatherRepository(this, prefs),
             trip = TripRepository(this),
             reminders = ReminderRepository(this),
+            oil = OilRepository(this),
             wheel = WheelKeys(this, prefs),
         )
     }

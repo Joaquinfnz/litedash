@@ -49,27 +49,28 @@ data class Colors(
     val danger: Color,
 )
 
+// Tema rally (versión de Joaquín): azul profundo con acentos dorados.
 val DarkColors = Colors(
     dark = true,
-    background = Brand.Graphite,
-    surface = Color(0xFF171B21),
-    surfaceHigh = Brand.GraphiteLight,
-    line = Color(0xFF2A313B),
+    background = Color(0xFF071330),
+    surface = Color(0xFF0D1F4A),
+    surfaceHigh = Color(0xFF15306B),
+    line = Color(0xFF234184),
     text = Brand.LightWhite,
-    textMuted = Color(0xFF9AA3AE),
-    accent = Brand.Amber,
+    textMuted = Color(0xFFA7B6D6),
+    accent = Color(0xFFF2C230),
     danger = Color(0xFFFF6B5E),
 )
 
 val LightColors = Colors(
     dark = false,
-    background = Color(0xFFF2F3F5),
+    background = Color(0xFFEEF2FA),
     surface = Color.White,
-    surfaceHigh = Color(0xFFE6E9ED),
-    line = Color(0xFFDADEE3),
-    text = Brand.Graphite,
-    textMuted = Color(0xFF5B6470),
-    accent = Color(0xFFE59500),
+    surfaceHigh = Color(0xFFDDE5F5),
+    line = Color(0xFFC9D4EA),
+    text = Color(0xFF0A1A3F),
+    textMuted = Color(0xFF4F5F80),
+    accent = Color(0xFF1F4FBF),
     danger = Color(0xFFD93A2B),
 )
 

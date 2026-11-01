@@ -296,6 +296,12 @@ private fun CarSettings(d: Dependencies) {
     } else if (installed.isEmpty()) {
         SettingsCard { Label(stringResource(R.string.car_coming_soon), Typography.small, c.textMuted) }
     }
+    SettingsCard(stringResource(R.string.info_title), stringResource(R.string.info_title_help)) {
+        CarInfoSettings(d.info, d.weather, d.trip)
+    }
+    SettingsCard(stringResource(R.string.fuel_title), stringResource(R.string.fuel_help)) {
+        FuelSettings(d.fuel, d.oil)
+    }
     SettingsCard(stringResource(R.string.oil_change), stringResource(R.string.oil_help)) {
         OilSettings(d.oil)
     }

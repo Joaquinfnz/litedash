@@ -4,25 +4,28 @@ import android.content.Context
 import java.io.File
 
 /**
- * Autos que vienen dentro del APK (assets/autos/<carpeta>): se copian a
- * files/autos la primera vez, o si el APK trae imágenes nuevas, antes de que
- * CarRepository lea los paquetes. Sin internet y sin catálogo.
+ * Autos que vienen dentro del APK (assets/autos/<carpeta>, con su giro/ de
+ * cuadros): se copian a files/autos la primera vez, o si el APK trae imágenes
+ * nuevas, antes de que CarRepository lea los paquetes. Sin internet ni catálogo.
  */
 object BundledCar {
     private const val ASSETS = "autos"
-    const val XV_ID = "subaru/xv-2013"
+    const val DEFAULT_ID = "subaru/xv-grafito"
 
     fun install(context: Context) = runCatching {
-        val assets = context.assets
-        for (folder in assets.list(ASSETS).orEmpty()) {
-            val target = File(File(context.filesDir, ASSETS), folder)
-            for (name in assets.list("$ASSETS/$folder").orEmpty()) {
-                val out = File(target, name)
-                val bytes = assets.open("$ASSETS/$folder/$name").use { it.readBytes() }
-                if (out.exists() && out.length() == bytes.size.toLong()) continue
-                target.mkdirs()
-                out.writeBytes(bytes)
-            }
+        copy(context, ASSETS, File(context.filesDir, ASSETS))
+    }
+
+    /** Copia recursiva; un archivo igual (mismo tamaño) no se vuelve a escribir. */
+    private fun copy(context: Context, path: String, target: File) {
+        val children = context.assets.list(path).orEmpty()
+        if (children.isEmpty()) {
+            val bytes = context.assets.open(path).use { it.readBytes() }
+            if (target.exists() && target.length() == bytes.size.toLong()) return
+            target.parentFile?.mkdirs()
+            target.writeBytes(bytes)
+            return
         }
+        for (name in children) copy(context, "$path/$name", File(target, name))
     }
 }

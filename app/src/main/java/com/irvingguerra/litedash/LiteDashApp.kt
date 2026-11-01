@@ -1,6 +1,7 @@
 package com.irvingguerra.litedash
 
 import android.app.Application
+import java.io.File
 import android.service.notification.StatusBarNotification
 import com.irvingguerra.litedash.feature.updater.Updater
 import com.irvingguerra.litedash.feature.apps.AppRepository
@@ -21,12 +22,19 @@ class LiteDashApp : Application() {
         val mapPackages = NAVIGATION_PACKAGES.toSet() +
             if (BuildConfig.DEBUG) setOf(NavigationRepository.TEST_PACKAGE) else emptySet()
         val prefs = Preferences(this)
+        // Los XV en imagen fija de la versión anterior se reemplazan por los renders 3D.
+        getSharedPreferences("joaquin", MODE_PRIVATE).takeIf { !it.getBoolean("xv_3d", false) }?.let {
+            for (old in listOf("subaru-xv-2013", "subaru-xv-plata", "subaru-xv-rally")) File(File(filesDir, "autos"), old).deleteRecursively()
+        }
         BundledCar.install(this)
+        val oil = OilRepository(this)
         // Tu XV queda elegido la primera vez; se puede cambiar en Ajustes → Tu auto.
         getSharedPreferences("joaquin", MODE_PRIVATE).let { j ->
-            if (!j.getBoolean("xv_elegido", false)) {
-                if (prefs.carModel == null) prefs.carModel = BundledCar.XV_ID
-                j.edit().putBoolean("xv_elegido", true).apply()
+            if (!j.getBoolean("xv_3d", false)) {
+                if (prefs.carModel == null || prefs.carModel!!.startsWith("subaru/xv")) prefs.carModel = BundledCar.DEFAULT_ID
+                // El giro empieza en el tres cuartos de frente (como la foto), no en un ángulo viejo.
+                prefs.carAngle = null
+                j.edit().putBoolean("xv_3d", true).apply()
             }
         }
         Dependencies(
@@ -40,7 +48,9 @@ class LiteDashApp : Application() {
             weather = WeatherRepository(this, prefs),
             trip = TripRepository(this),
             reminders = ReminderRepository(this),
-            oil = OilRepository(this),
+            oil = oil,
+            fuel = FuelRepository(this, oil),
+            info = CarInfoPrefs(this),
             wheel = WheelKeys(this, prefs),
         )
     }
